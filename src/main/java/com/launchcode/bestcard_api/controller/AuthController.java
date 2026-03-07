@@ -30,15 +30,14 @@ public class AuthController {
         User user = authService.signup(request);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new AuthResponse(user.getId(), "Signup successful"));
+                .body(new AuthResponse( "Signup successful"));
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(
             @Valid @RequestBody LoginRequest request) {
 
-        User user = authService.login(request);
-        return ResponseEntity.ok(
-                new AuthResponse(user.getId(), "Login successful"));
+        AuthResponse response = authService.login(request);
+        return ResponseEntity.ok(response);
     }
 }
