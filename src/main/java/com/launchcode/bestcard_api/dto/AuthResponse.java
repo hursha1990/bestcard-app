@@ -2,19 +2,13 @@ package com.launchcode.bestcard_api.dto;
 
 public class AuthResponse {
 
-    private Long userId;
-    private String message;
+    private String token;
 
-    public AuthResponse(Long userId, String message) {
-        this.userId = userId;
-        this.message = message;
+    public AuthResponse(String token) {
+        this.token = token;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public String getMessage() {
-        return message;
+    public String getToken() {
+        return token;
     }
 }
