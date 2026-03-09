@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.launchcode</groupId>
-	<artifactId>bestcard-api</artifactId>
+	<artifactId>bestcard-app</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>bestcard-api</name>
 	<description>Backend for best card application</description>
