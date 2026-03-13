@@ -1,13 +1,13 @@
 package com.launchcode.bestcard_api.controller;
 
+import com.launchcode.bestcard_api.dto.CardResponse;
 import com.launchcode.bestcard_api.dto.CreateCardRequest;
 import com.launchcode.bestcard_api.service.CardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/cards")
@@ -29,5 +29,15 @@ public class CardController {
         cardService.createCard(request, email);
 
         return ResponseEntity.ok("Card added successfully");
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CardResponse>> getCards(Authentication authentication) {
+
+        String email = authentication.getName();
+
+        List<CardResponse> cards = cardService.getCardsByUser(email);
+
+        return ResponseEntity.ok(cards);
     }
 }
