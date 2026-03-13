@@ -1,6 +1,7 @@
 package com.launchcode.bestcard_api.service;
 
 
+import com.launchcode.bestcard_api.dto.CardResponse;
 import com.launchcode.bestcard_api.dto.CreateCardRequest;
 import com.launchcode.bestcard_api.exception.BadRequestException;
 import com.launchcode.bestcard_api.model.Card;
@@ -12,6 +13,7 @@ import com.launchcode.bestcard_api.repository.CardRepository;
 import com.launchcode.bestcard_api.repository.CategoryRepository;
 import com.launchcode.bestcard_api.repository.UserRepository;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -46,20 +48,37 @@ public class CardService {
         Category category = categoryRepository
                 .findByName(request.getCategory())
                 .orElseGet(() -> {
-            Category newCategory = new Category();
-            newCategory.setName(request.getCategory());
-            return categoryRepository.save(newCategory);
-        });
+                    Category newCategory = new Category();
+                    newCategory.setName(request.getCategory());
+                    return categoryRepository.save(newCategory);
+                });
 
         CardDiscount cd = new CardDiscount();
         cd.setCard(card);
         cd.setCategory(category);
         cd.setDiscount(request.getDiscount());
+
         cardDiscountRepository.save(cd);
     }
+    public List<CardResponse> getCardsByUser(String email) {
 
-    public List<Card> getCardsByUser(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
-        return cardRepository.findByUser(user);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<Card> cards = cardRepository.findByUser(user);
+
+        return cards.stream().map(card -> {
+
+            CardDiscount cd = card.getCardDiscounts().get(0);
+
+            return new CardResponse(
+                    card.getId(),
+                    card.getCardName(),
+                    cd.getCategory().getName(),
+                    cd.getDiscount()
+            );
+
+        }).toList();
     }
 }
+
