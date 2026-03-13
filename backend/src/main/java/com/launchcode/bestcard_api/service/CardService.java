@@ -12,6 +12,7 @@ import com.launchcode.bestcard_api.repository.CardRepository;
 import com.launchcode.bestcard_api.repository.CategoryRepository;
 import com.launchcode.bestcard_api.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 public class CardService {
@@ -45,17 +46,20 @@ public class CardService {
         Category category = categoryRepository
                 .findByName(request.getCategory())
                 .orElseGet(() -> {
-                    Category newCategory = new Category();
-                    newCategory.setName(request.getCategory());
-                    return categoryRepository.save(newCategory);
-                });
+            Category newCategory = new Category();
+            newCategory.setName(request.getCategory());
+            return categoryRepository.save(newCategory);
+        });
 
         CardDiscount cd = new CardDiscount();
         cd.setCard(card);
         cd.setCategory(category);
         cd.setDiscount(request.getDiscount());
-
         cardDiscountRepository.save(cd);
     }
-}
 
+    public List<Card> getCardsByUser(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        return cardRepository.findByUser(user);
+    }
+}
