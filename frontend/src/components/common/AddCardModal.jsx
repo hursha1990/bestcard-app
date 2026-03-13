@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { addCard } from "../../services/cardService";
 import Button from "./Button";
 import "./common.css";
 
@@ -47,7 +48,7 @@ const AddCardModal = ({ isOpen, onClose, onAdd, initialData = null, onUpdate }) 
     return "";
   };
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     const name = (cardName || "").trim();
     const cat = (category || "").trim();
     const disc = String((discount || "").trim());
@@ -60,13 +61,20 @@ const AddCardModal = ({ isOpen, onClose, onAdd, initialData = null, onUpdate }) 
 
     if (nameErr || catErr || discErr) return;
 
-    const payload = { name, category: cat, rewards: disc };
+    const payload = {
+      cardName: name,
+      category: cat,
+      discount: disc
+    };
 
-    if (initialData && typeof onUpdate === "function") {
-      // preserve id when updating
-      onUpdate({ id: initialData.id, ...payload });
-    } else {
-      onAdd(payload);
+    try {
+      await addCard(payload);
+      if (onAdd) {
+        onAdd();
+      }
+      onClose();
+    } catch (error) {
+      console.error("Error adding card", error);
     }
   };
 

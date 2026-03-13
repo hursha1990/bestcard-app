@@ -24,10 +24,6 @@ const LandingPageA = () => {
     );
   }, [query, cards]);
 
-  useEffect(() => {
-    fetchCards();
-  }, []);
-
   const fetchCards = async () => {
     try {
       const response = await getCards();
@@ -45,6 +41,10 @@ const LandingPageA = () => {
       console.error("Failed to load cards", error);
     }
   };
+
+  useEffect(() => {
+    fetchCards();
+  }, []);
 
   const colorPalette = [
     "#d9534f",
