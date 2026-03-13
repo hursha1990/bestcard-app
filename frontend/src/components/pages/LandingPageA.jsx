@@ -1,20 +1,13 @@
 import { useState, useMemo, useEffect } from "react";
 import CardPreview from "../layout/CardPreview";
-import { mockCards } from "../../data/mockCards";
+import { getCards } from "../../services/cardService";
 import Button from "../common/Button";
 import AddCardModal from "../common/AddCardModal";
 import ConfirmModal from "../common/ConfirmModal";
 
 const LandingPageA = () => {
   const [query, setQuery] = useState("");
-  const [cards, setCards] = useState(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem("bestcard_user_cards") || "[]");
-      return [...mockCards, ...saved];
-    } catch {
-      return [...mockCards];
-    }
-  });
+  const [cards, setCards] = useState([]);
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingCard, setEditingCard] = useState(null);
@@ -31,20 +24,32 @@ const LandingPageA = () => {
     );
   }, [query, cards]);
 
-  // keep localStorage in sync for user-added cards only
   useEffect(() => {
+    fetchCards();
+  }, []);
+
+  const fetchCards = async () => {
     try {
-      const userOnly = cards.filter((c) => !mockCards.find((m) => m.id === c.id));
-      localStorage.setItem("bestcard_user_cards", JSON.stringify(userOnly));
-    } catch {
-      // ignore
+      const response = await getCards();
+
+      const formattedCards = response.data.map((card) => ({
+        id: card.id,
+        name: card.cardName,
+        category: card.category,
+        rewards: card.discount
+      }));
+
+      setCards(formattedCards);
+
+    } catch (error) {
+      console.error("Failed to load cards", error);
     }
-  }, [cards]);
+  };
 
   const colorPalette = [
     "#d9534f",
     "#f0ad4e",
-    "#0275d8", 
+    "#0275d8",
     "#20c997",
     "#28a745",
     "#8f6076ff",
@@ -94,11 +99,8 @@ const LandingPageA = () => {
           setEditingCard(null);
           setShowAddModal(false);
         }}
-        onAdd={(data) => {
-          const existingIds = cards.map((c) => Number(c.id) || 0);
-          const nextId = existingIds.length ? Math.max(...existingIds) + 1 : 1;
-          const newCard = { id: nextId, ...data };
-          setCards((prev) => [...prev, newCard]);
+        onAdd={() => {
+          fetchCards();
           setShowAddModal(false);
         }}
         onUpdate={(updated) => {
