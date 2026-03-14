@@ -3,7 +3,11 @@ package com.launchcode.bestcard_api.service;
 
 import com.launchcode.bestcard_api.dto.CardResponse;
 import com.launchcode.bestcard_api.dto.CreateCardRequest;
+import com.launchcode.bestcard_api.dto.UpdateCardRequest;
 import com.launchcode.bestcard_api.exception.BadRequestException;
+import com.launchcode.bestcard_api.exception.CardNotFoundException;
+import com.launchcode.bestcard_api.exception.UnauthorizedException;
+import com.launchcode.bestcard_api.exception.UserNotFoundException;
 import com.launchcode.bestcard_api.model.Card;
 import com.launchcode.bestcard_api.model.CardDiscount;
 import com.launchcode.bestcard_api.model.Category;
@@ -34,6 +38,7 @@ public class CardService {
         this.userRepository = userRepository;
     }
 
+    //create card with discount
     public void createCard(CreateCardRequest request, String email) {
 
         User user = userRepository.findByEmail(email)
@@ -60,6 +65,8 @@ public class CardService {
 
         cardDiscountRepository.save(cd);
     }
+
+    //get user's cards with discount info
     public List<CardResponse> getCardsByUser(String email) {
 
         User user = userRepository.findByEmail(email)
@@ -80,5 +87,42 @@ public class CardService {
 
         }).toList();
     }
+
+    //update card and discount info
+        public void updateCard(Long cardId, UpdateCardRequest request, String email) {
+
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+            Card card = cardRepository.findById(cardId)
+                    .orElseThrow(() -> new CardNotFoundException("Card not found"));
+
+            if (!card.getUser().getId().equals(user.getId())) {
+                throw new UnauthorizedException("You cannot modify this card");
+            }
+
+            // update card name
+            card.setCardName(request.getCardName());
+            cardRepository.save(card);
+
+            // find or create category
+            Category category = categoryRepository
+                    .findByName(request.getCategory())
+                    .orElseGet(() -> {
+                        Category newCategory = new Category();
+                        newCategory.setName(request.getCategory());
+                        return categoryRepository.save(newCategory);
+                    });
+
+            // update discount
+            CardDiscount cardDiscount = cardDiscountRepository
+                    .findByCard(card)
+                    .orElseThrow(() -> new BadRequestException("Card discount not found"));
+
+            cardDiscount.setCategory(category);
+            cardDiscount.setDiscount(request.getDiscount());
+
+            cardDiscountRepository.save(cardDiscount);
+        }
 }
 

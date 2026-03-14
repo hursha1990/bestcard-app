@@ -2,6 +2,7 @@ package com.launchcode.bestcard_api.controller;
 
 import com.launchcode.bestcard_api.dto.CardResponse;
 import com.launchcode.bestcard_api.dto.CreateCardRequest;
+import com.launchcode.bestcard_api.dto.UpdateCardRequest;
 import com.launchcode.bestcard_api.service.CardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -39,5 +40,18 @@ public class CardController {
         List<CardResponse> cards = cardService.getCardsByUser(email);
 
         return ResponseEntity.ok(cards);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateCard(
+            @PathVariable Long id,
+            @RequestBody UpdateCardRequest request,
+            Authentication authentication) {
+
+        String email = authentication.getName();
+
+        cardService.updateCard(id, request, email);
+
+        return ResponseEntity.ok("Card updated successfully");
     }
 }
