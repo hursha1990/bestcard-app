@@ -11,3 +11,7 @@ export const getCards = () => {
 export const updateCard = (id, data) => {
   return API.put(`/cards/${id}`, data);
 };
+
+export const deleteCard = (id) => {
+  return API.delete(`/cards/${id}`);
+};
