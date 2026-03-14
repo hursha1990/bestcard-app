@@ -54,4 +54,16 @@ public class CardController {
 
         return ResponseEntity.ok("Card updated successfully");
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCard(
+            @PathVariable Long id,
+            Authentication authentication) {
+
+        String email = authentication.getName();
+
+        cardService.deleteCard(id, email);
+
+        return ResponseEntity.ok("Card deleted successfully");
+    }
 }

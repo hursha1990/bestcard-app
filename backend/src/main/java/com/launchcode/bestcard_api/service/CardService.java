@@ -89,40 +89,64 @@ public class CardService {
     }
 
     //update card and discount info
-        public void updateCard(Long cardId, UpdateCardRequest request, String email) {
+    public void updateCard(Long cardId, UpdateCardRequest request, String email) {
 
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new UserNotFoundException("User not found"));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-            Card card = cardRepository.findById(cardId)
-                    .orElseThrow(() -> new CardNotFoundException("Card not found"));
+        Card card = cardRepository.findById(cardId)
+                .orElseThrow(() -> new CardNotFoundException("Card not found"));
 
-            if (!card.getUser().getId().equals(user.getId())) {
-                throw new UnauthorizedException("You cannot modify this card");
-            }
-
-            // update card name
-            card.setCardName(request.getCardName());
-            cardRepository.save(card);
-
-            // find or create category
-            Category category = categoryRepository
-                    .findByName(request.getCategory())
-                    .orElseGet(() -> {
-                        Category newCategory = new Category();
-                        newCategory.setName(request.getCategory());
-                        return categoryRepository.save(newCategory);
-                    });
-
-            // update discount
-            CardDiscount cardDiscount = cardDiscountRepository
-                    .findByCard(card)
-                    .orElseThrow(() -> new BadRequestException("Card discount not found"));
-
-            cardDiscount.setCategory(category);
-            cardDiscount.setDiscount(request.getDiscount());
-
-            cardDiscountRepository.save(cardDiscount);
+        if (!card.getUser().getId().equals(user.getId())) {
+            throw new UnauthorizedException("You cannot modify this card");
         }
+
+        // update card name
+        card.setCardName(request.getCardName());
+        cardRepository.save(card);
+
+        // find or create category
+        Category category = categoryRepository
+                .findByName(request.getCategory())
+                .orElseGet(() -> {
+                    Category newCategory = new Category();
+                    newCategory.setName(request.getCategory());
+                    return categoryRepository.save(newCategory);
+                });
+
+        // update discount
+        CardDiscount cardDiscount = cardDiscountRepository
+                .findByCard(card)
+                .orElseThrow(() -> new BadRequestException("Card discount not found"));
+
+        cardDiscount.setCategory(category);
+        cardDiscount.setDiscount(request.getDiscount());
+
+        cardDiscountRepository.save(cardDiscount);
+    }
+
+    public void deleteCard(Long cardId, String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        Card card = cardRepository.findById(cardId)
+                .orElseThrow(() -> new CardNotFoundException("Card not found"));
+
+        // make sure the logged-in user owns the card
+        if (!card.getUser().getId().equals(user.getId())) {
+            throw new UnauthorizedException("You cannot delete this card");
+        }
+
+        // delete discount first (foreign key)
+        CardDiscount cardDiscount = cardDiscountRepository
+                .findByCard(card)
+                .orElseThrow(() -> new RuntimeException("Card discount not found"));
+
+        cardDiscountRepository.delete(cardDiscount);
+
+        // delete card
+        cardRepository.delete(card);
+    }
 }
 
