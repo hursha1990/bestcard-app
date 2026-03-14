@@ -1,6 +1,7 @@
 package com.launchcode.bestcard_api.exception.handler;
 
 import com.launchcode.bestcard_api.exception.BadRequestException;
+import com.launchcode.bestcard_api.exception.CardNotFoundException;
 import com.launchcode.bestcard_api.exception.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +17,9 @@ public class GlobalExceptionHandler {
             UnauthorizedException ex) {
 
         return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
+                .status(HttpStatus.FORBIDDEN)
                 .body(new ApiErrorResponse(
-                        HttpStatus.UNAUTHORIZED.value(),
+                        HttpStatus.FORBIDDEN.value(),
                         ex.getMessage()
                 ));
     }
@@ -31,6 +32,18 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ApiErrorResponse(
                         HttpStatus.BAD_REQUEST.value(),
+                        ex.getMessage()
+                ));
+    }
+
+    @ExceptionHandler(CardNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleCardNotFound(
+            CardNotFoundException ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ApiErrorResponse(
+                        HttpStatus.NOT_FOUND.value(),
                         ex.getMessage()
                 ));
     }
