@@ -7,3 +7,7 @@ export const signup = (data) => {
 export const login = (data) => {
   return API.post("/login", data);
 };
+
+export const logout = () => {
+  localStorage.removeItem("token");
+};
