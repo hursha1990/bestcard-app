@@ -31,6 +31,7 @@
 /* Outline */
 .btn-ghost{ background:transparent; color:var(--text); border:1px solid rgba(0,0,0,0.06) }
 .btn-ghost:hover{ background:rgba(82,79,241,0.06) }
+.logout-btn { background-color: #dc3545;color: white;}
 
 /* Modal for Add Card / reusable modals */
 .modal-backdrop{
