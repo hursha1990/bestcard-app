@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import CardPreview from "../layout/CardPreview";
-import { getCards } from "../../services/cardService";
+import { getCards, deleteCard } from "../../services/cardService";
 import Button from "../common/Button";
 import AddCardModal from "../common/AddCardModal";
 import ConfirmModal from "../common/ConfirmModal";
@@ -128,17 +128,21 @@ const LandingPageA = () => {
         message={deleteCandidate ? `Delete ${deleteCandidate.name}? This cannot be undone.` : "Delete?"}
         confirmLabel="Delete"
         cancelLabel="Cancel"
-        onConfirm={() => {
+        onConfirm={async () => {
           if (!deleteCandidate) return;
-          setCards((prev) => prev.filter((c) => c.id !== deleteCandidate.id));
-          // clear edit state and close add/edit modal if it was open for this card
-          if (editingCard && deleteCandidate && editingCard.id === deleteCandidate.id) {
-            setEditingCard(null);
-            setShowAddModal(false);
+
+          try {
+            await deleteCard(deleteCandidate.id);
+
+            // refresh cards
+            fetchCards();
+
+          } catch (error) {
+            console.error("Failed to delete card", error);
           }
+
           setDeleteCandidate(null);
         }}
-        onCancel={() => setDeleteCandidate(null)}
       />
       <section aria-label="category-discounts" className="discount-card">
         <h3 className="discount-tracker-title">Discount Tracker</h3>
