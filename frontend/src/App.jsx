@@ -1,5 +1,5 @@
 // import "./App.css";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./components/pages/Home";
 import WhatIsBestCard from "./components/pages/WhatIsBestCard";
 import About from "./components/pages/About";
@@ -11,12 +11,14 @@ import NavBar from "./components/layout/NavBar";
 import Footer from "./components/layout/Footer";
 
 export default function App() {
+  const isLoggedIn = Boolean(localStorage.getItem("token"));
+
   return (
     <Router>
       <div className="NavBar">
         <NavBar />
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={isLoggedIn ? <Navigate to="/landingA" replace /> : <Home />} />
           <Route path="/what-is-bestcard" element={<WhatIsBestCard />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
