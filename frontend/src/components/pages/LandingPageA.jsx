@@ -1,25 +1,17 @@
 import { useState, useMemo, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import CardPreview from "../layout/CardPreview";
 import { getCards, deleteCard } from "../../services/cardService";
-import { logout } from "../../services/authService";
 import Button from "../common/Button";
 import AddCardModal from "../common/AddCardModal";
 import ConfirmModal from "../common/ConfirmModal";
 
 const LandingPageA = () => {
-  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [cards, setCards] = useState([]);
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingCard, setEditingCard] = useState(null);
   const [deleteCandidate, setDeleteCandidate] = useState(null);
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
 
 
   // memoize filtered results for performance
@@ -74,12 +66,6 @@ const LandingPageA = () => {
 
   return (
     <main>
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "10px" }}>
-        <Button
-          className="logout-btn"
-          onClick={handleLogout} ariaLabel="Logout">Logout
-        </Button>
-      </div>
       <div className="search-row">
         <label htmlFor="card-search" className="search-label">
           Search cards:
