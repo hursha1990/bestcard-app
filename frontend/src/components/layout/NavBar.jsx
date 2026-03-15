@@ -1,14 +1,33 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./layout.css";
+import { logout } from "../../services/authService";
 
 const NavBar = () => {
   const [open, setOpen] = useState(false);
   const navId = "primary-navigation";
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isLoggedIn = Boolean(localStorage.getItem("token"));
+
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname]);
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    logout();
+    setOpen(false);
+    navigate("/login");
+  };
+
+  const homeHref = isLoggedIn ? "/landingA" : "/";
 
   return (
     <nav className="navbar" aria-label="Main navigation">
-      <h1 className="logo">BestCard</h1>
+      <Link to={homeHref} className="logo-link" aria-label="BestCard home">
+        <h1 className="logo">BestCard</h1>
+      </Link>
 
       <button
         className="hamburger"
@@ -23,7 +42,7 @@ const NavBar = () => {
       <div>
         <ul id={navId} className={`nav-links ${open ? "open" : ""}`}>
           <li>
-            <Link to="/" onClick={() => setOpen(false)}>Home</Link>
+            <Link to={homeHref} onClick={() => setOpen(false)}>Home</Link>
           </li>
 
           <li>
@@ -38,13 +57,21 @@ const NavBar = () => {
             <Link to="/contact" onClick={() => setOpen(false)}>Contact</Link>
           </li>
 
-          <li>
-            <Link to="/signup" onClick={() => setOpen(false)}>Sign Up</Link>
-          </li>
+          {!isLoggedIn ? (
+            <>
+              <li>
+                <Link to="/signup" onClick={() => setOpen(false)}>Sign Up</Link>
+              </li>
 
-          <li>
-            <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
-          </li>
+              <li>
+                <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
+              </li>
+            </>
+          ) : (
+            <li>
+              <Link to="/login" onClick={handleLogout}>Logout</Link>
+            </li>
+          )}
         </ul>
       </div>
     </nav>
