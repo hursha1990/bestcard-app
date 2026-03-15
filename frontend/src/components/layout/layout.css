@@ -9,7 +9,6 @@ nav {
   position: sticky;
   top: 0;
   z-index: 1000;
-  /* ensure navbar sits above page content */
   min-height: 64px;
 }
 
@@ -29,7 +28,7 @@ nav {
   margin-right: auto;
   padding: 6px;
   border-radius: 6px;
-  transition: all .16s ease; 
+  transition: all .16s ease;
 }
 
 .logo-link:hover {
@@ -104,12 +103,11 @@ nav a:hover {
 }
 
 /* Tablet + Desktop */
-@media (min-width: 550px) {
+@media (min-width: 600px) {
   .hamburger {
     display: none;
   }
 
-  /* Desktop: show nav inline, remove mobile dropdown styling */
   .nav-links {
     display: flex !important;
     position: static !important;
@@ -131,7 +129,6 @@ nav a:hover {
   }
 }
 
-/* Mobile: make dropdown a fixed overlay so it appears above all content */
 @media (max-width: 599px) {
   .nav-links {
     position: fixed !important;
@@ -144,7 +141,6 @@ nav a:hover {
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
   }
 
-  /* make sure links are easy to tap */
   .nav-links li {
     margin: 8px 0
   }
@@ -154,10 +150,8 @@ nav a:hover {
   }
 }
 
-/* Tablet / small desktop */
 @media (min-width: 768px) {
 
-  /* Show nav links horizontally */
   .nav-links {
     display: flex;
     gap: 1.25rem;
@@ -168,9 +162,6 @@ nav a:hover {
     display: none;
   }
 
-  /* hide hamburger */
-
-  /* Hero side-by-side */
   .hero {
     flex-direction: row;
     align-items: center;
@@ -186,13 +177,11 @@ nav a:hover {
     flex: 1;
   }
 
-  /* Cards - 2 columns */
   .cards-container {
     grid-template-columns: repeat(2, 1fr);
     gap: 1.25rem;
   }
 
-  /* Contact icons - 2 columns */
   #contact-icons {
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;

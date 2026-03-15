@@ -10,12 +10,9 @@
 }
 
 .btn:disabled{ opacity: .6; cursor: not-allowed }
-
-/* Primary variant - matches existing project color */
 .btn-primary{ background:#524ff1; color:#fff }
 .btn-primary:hover{ transform: translateY(-2px); box-shadow: 0 6px 18px rgba(82,79,241,0.12) }
 
-/* Hover animation preserved from previous global button rules */
 .btn:hover {
   animation: heartbeat 1s infinite;
 }
@@ -33,7 +30,6 @@
 .btn-ghost:hover{ background:rgba(82,79,241,0.06) }
 .logout-btn { background-color: #dc3545;color: white;}
 
-/* Modal for Add Card / reusable modals */
 .modal-backdrop{
   position: fixed;
   inset: 0;
@@ -58,6 +54,5 @@
 .modal-actions{ display:flex; gap:10px; justify-content:flex-end; margin-top:14px }
 .modal .btn-primary{ background: #524ff1; color:#fff }
 
-/* Validation error styles */
 .input-error{ border-color: #d9534f; box-shadow: 0 0 0 3px rgba(217,83,79,0.06); }
 .error-text{ color: #d9534f; font-size: 0.85rem; margin-top:6px }

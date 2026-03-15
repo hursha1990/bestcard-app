@@ -7,10 +7,8 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // show confirmation message and reset form fields
     setSent(true);
     formRef.current?.reset();
-    // hide message after a short delay
     setTimeout(() => setSent(false), 3500);
   };
 

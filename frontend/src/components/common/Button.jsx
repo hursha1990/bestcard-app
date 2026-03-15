@@ -1,4 +1,3 @@
-// import React from "react";
 import "./common.css";
 
 const Button = ({ children, className = "", type = "button", onClick, disabled = false, ariaLabel, ...rest }) => {
