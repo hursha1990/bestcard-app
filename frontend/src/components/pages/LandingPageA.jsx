@@ -144,6 +144,7 @@ const LandingPageA = () => {
 
           setDeleteCandidate(null);
         }}
+        onCancel={() => setDeleteCandidate(null)}
       />
       <section aria-label="category-discounts" className="discount-card">
         <h3 className="discount-tracker-title">Discount Tracker</h3>
